@@ -27,6 +27,7 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+
   updateTask(Map task) async {
     String path = "http://192.168.100.5:8000/api/task-update/${task["id"]}/";
     Uri _uri = Uri.parse(path);
@@ -43,6 +44,36 @@ class _HomePageState extends State<HomePage> {
     );
     if(response.statusCode == 200){
       print("Actualizado");
+    }
+  }
+
+  addTask() async {
+    String path = "http://192.168.100.5:8000/api/task-create/";
+    Uri _uri = Uri.parse(path);
+    http.Response response = await http.post(
+      _uri,
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: json.encode({
+        "title": "add task flutter",
+        "description": "adasdsa",
+        "completed": true,
+      }),
+    );
+    if(response.statusCode == 200){
+      print("Creado");
+    }
+  }
+
+  deleteTask(int id) async{
+    String path = "http://192.168.100.5:8000/api/task-delete/$id/";
+    Uri _uri = Uri.parse(path);
+    http.Response response = await http.delete(_uri);
+    if(response.statusCode == 200){
+      setState(() {
+        getData();
+      });
     }
   }
 
@@ -98,36 +129,43 @@ class _HomePageState extends State<HomePage> {
                 shrinkWrap: true,
                 physics: ScrollPhysics(),
                 itemBuilder: (BuildContext context, int index) {
-                  return Container(
-                    margin: EdgeInsets.symmetric(vertical: 8.0),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(12.0),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black12.withOpacity(0.04),
-                          offset: Offset(2, 6),
-                          blurRadius: 12,
-                        ),
-                      ],
-                    ),
-                    child: ListTile(
-                      title: Text(
-                        tasks[index]["title"],
-                        style: TextStyle(
-                          decoration: tasks[index]["completed"]
-                              ? TextDecoration.lineThrough
-                              : TextDecoration.none,
-                        ),
+                  return GestureDetector(
+                    onLongPress: (){
+                      deleteTask(tasks[index]["id"]);
+
+                    },
+                    child: Container(
+                      margin: EdgeInsets.symmetric(vertical: 8.0),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12.0),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black12.withOpacity(0.04),
+                            offset: Offset(2, 6),
+                            blurRadius: 12,
+                          ),
+                        ],
                       ),
-                      subtitle: Text(tasks[index]["description"]),
-                      trailing: Checkbox(
-                        value: tasks[index]["completed"],
-                        onChanged: (bool? value) {
-                          tasks[index]["completed"] = value;
-                          updateTask(tasks[index]);
-                          setState(() {});
-                        },
+                      child: ListTile(
+                        title: Text(
+                          tasks[index]["title"],
+                          style: TextStyle(
+                            decoration: tasks[index]["completed"]
+                                ? TextDecoration.lineThrough
+                                : TextDecoration.none,
+                          ),
+                        ),
+                        subtitle: Text(tasks[index]["description"]),
+                        trailing: Checkbox(
+                          value: tasks[index]["completed"],
+                          onChanged: (bool? value) {
+                            tasks[index]["completed"] = value;
+                            // updateTask(tasks[index]);
+                            addTask();
+                            setState(() {});
+                          },
+                        ),
                       ),
                     ),
                   );
