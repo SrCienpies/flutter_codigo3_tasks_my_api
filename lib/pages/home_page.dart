@@ -27,8 +27,8 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  updateTask() async {
-    String path = "http://192.168.100.5:8000/api/task-update/1/";
+  updateTask(Map task) async {
+    String path = "http://192.168.100.5:8000/api/task-update/${task["id"]}/";
     Uri _uri = Uri.parse(path);
     http.Response response = await http.post(
       _uri,
@@ -36,9 +36,9 @@ class _HomePageState extends State<HomePage> {
         "Content-Type": "application/json"
       },
       body: json.encode({
-        "title": "Título desde Flutter",
-        "description": "Descripción desde Flutter ",
-        "completed": false,
+        "title": task["title"],
+        "description": task["description"],
+        "completed": task["completed"],
       }),
     );
     if(response.statusCode == 200){
@@ -125,7 +125,7 @@ class _HomePageState extends State<HomePage> {
                         value: tasks[index]["completed"],
                         onChanged: (bool? value) {
                           tasks[index]["completed"] = value;
-                          updateTask();
+                          updateTask(tasks[index]);
                           setState(() {});
                         },
                       ),
