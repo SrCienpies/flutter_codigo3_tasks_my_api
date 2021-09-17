@@ -38,7 +38,7 @@ class _HomePageState extends State<HomePage> {
                       Text(
                         "Bienvenido",
                         style: TextStyle(
-                          color: Colors.black87,
+                          color: Color(0xff2B2B2B),
                           fontWeight: FontWeight.w400,
                           fontSize: 16.0,
                         ),
@@ -46,8 +46,8 @@ class _HomePageState extends State<HomePage> {
                       Text(
                         "My Tasks",
                         style: TextStyle(
-                          color: Colors.black87,
-                          fontWeight: FontWeight.w600,
+                          color: Color(0xff454545),
+                          fontWeight: FontWeight.w700,
                           fontSize: 40.0,
                         ),
                       ),
@@ -55,9 +55,40 @@ class _HomePageState extends State<HomePage> {
                   ),
                   CircleAvatar(
                     radius: 26,
-                    backgroundImage: NetworkImage("https://images.pexels.com/photos/3310693/pexels-photo-3310693.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"),
+                    backgroundImage: NetworkImage(
+                        "https://images.pexels.com/photos/3310693/pexels-photo-3310693.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"),
                   ),
                 ],
+              ),
+              ListView.builder(
+                itemCount: 10,
+                primary: true,
+                shrinkWrap: true,
+                physics: ScrollPhysics(),
+                itemBuilder: (BuildContext context, int index){
+                  return  Container(
+                    margin: EdgeInsets.symmetric(vertical: 8.0),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12.0),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black12.withOpacity(0.04),
+                          offset: Offset(2, 6),
+                          blurRadius: 12,
+                        ),
+                      ],
+                    ),
+                    child: ListTile(
+                      title: Text("Ir de compras"),
+                      subtitle: Text("Ir a Metro a comprar tortillas"),
+                      trailing: Checkbox(
+                        value: true,
+                        onChanged: (bool? value) {},
+                      ),
+                    ),
+                  );
+                },
               ),
             ],
           ),
