@@ -9,7 +9,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-
   List tasks = [];
 
   @override
@@ -22,11 +21,28 @@ class _HomePageState extends State<HomePage> {
     String path = "http://192.168.100.5:8000/api/task-list/";
     Uri _uri = Uri.parse(path);
     http.Response response = await http.get(_uri);
-    if(response.statusCode == 200){
+    if (response.statusCode == 200) {
       tasks = json.decode(response.body);
-      setState(() {
+      setState(() {});
+    }
+  }
 
-      });
+  updateTask() async {
+    String path = "http://192.168.100.5:8000/api/task-update/1/";
+    Uri _uri = Uri.parse(path);
+    http.Response response = await http.post(
+      _uri,
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: json.encode({
+        "title": "Título desde Flutter",
+        "description": "Descripción desde Flutter ",
+        "completed": false,
+      }),
+    );
+    if(response.statusCode == 200){
+      print("Actualizado");
     }
   }
 
@@ -81,8 +97,8 @@ class _HomePageState extends State<HomePage> {
                 primary: true,
                 shrinkWrap: true,
                 physics: ScrollPhysics(),
-                itemBuilder: (BuildContext context, int index){
-                  return  Container(
+                itemBuilder: (BuildContext context, int index) {
+                  return Container(
                     margin: EdgeInsets.symmetric(vertical: 8.0),
                     decoration: BoxDecoration(
                       color: Colors.white,
@@ -96,15 +112,21 @@ class _HomePageState extends State<HomePage> {
                       ],
                     ),
                     child: ListTile(
-                      title: Text(tasks[index]["title"]),
+                      title: Text(
+                        tasks[index]["title"],
+                        style: TextStyle(
+                          decoration: tasks[index]["completed"]
+                              ? TextDecoration.lineThrough
+                              : TextDecoration.none,
+                        ),
+                      ),
                       subtitle: Text(tasks[index]["description"]),
                       trailing: Checkbox(
                         value: tasks[index]["completed"],
                         onChanged: (bool? value) {
                           tasks[index]["completed"] = value;
-                          setState(() {
-
-                          });
+                          updateTask();
+                          setState(() {});
                         },
                       ),
                     ),
